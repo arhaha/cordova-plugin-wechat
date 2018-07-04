@@ -29,6 +29,7 @@ import com.tencent.mm.opensdk.modelbiz.ChooseCardFromWXCardPackage;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaPreferences;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,13 +98,17 @@ public class Wechat extends CordovaPlugin {
     protected static IWXAPI wxAPI;
     protected static String appId;
 
+    protected static CordovaPreferences wx_preferences;
+
     @Override
     protected void pluginInitialize() {
 
         super.pluginInitialize();
-
+        if(wx_preferences == null) {
+            wx_preferences = this.preferences;
+        }
         String id = getAppId();
-
+		
         // save app id
         saveAppId(cordova.getActivity(), id);
 
@@ -114,8 +119,11 @@ public class Wechat extends CordovaPlugin {
     }
 
     protected void initWXAPI() {
+		
         IWXAPI api = getWxAPI(cordova.getActivity());
-
+        if(wx_preferences == null) {
+            wx_preferences = this.preferences;
+        }
         if (api != null) {
             api.registerApp(getAppId());
         }
@@ -277,12 +285,16 @@ public class Wechat extends CordovaPlugin {
         PayReq req = new PayReq();
 
         try {
-            final String appid = params.getString("appid");
-            final String savedAppid = getAppId(cordova.getActivity());
+			
+            /*final String appid = params.getString("appid");
+            final String savedAppid = getAppId();
+			System.out.println("savedAppid"+savedAppid);
             if (!savedAppid.equals(appid)) {
                 this.saveAppId(cordova.getActivity(), appid);
-            }
+            }*/
 
+            final String appid = getAppId();
+			System.out.println("params.appid"+appid);
             req.appId = appid;
             req.partnerId = params.has("mch_id") ? params.getString("mch_id") : params.getString("partnerid");
             req.prepayId = params.has("prepay_id") ? params.getString("prepay_id") : params.getString("prepayid");
@@ -596,8 +608,8 @@ public class Wechat extends CordovaPlugin {
     }
 
     public static String getAppId() {
-        if (appId == null) {
-            appId = preferences.getString(WXAPPID_PROPERTY_KEY, "");
+        if (appId == null && wx_preferences != null) {
+            appId = wx_preferences.getString(WXAPPID_PROPERTY_KEY, "");
         }
 
         return appId;
@@ -619,7 +631,7 @@ public class Wechat extends CordovaPlugin {
      * @param id
      */
     public static void saveAppId(Context ctx, String id) {
-        if (id.isEmpty()) {
+        if(id == null || id.isEmpty()) {
             return ;
         }
 
