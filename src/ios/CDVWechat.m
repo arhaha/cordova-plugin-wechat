@@ -15,7 +15,6 @@ static int const MAX_THUMBNAIL_SIZE = 320;
 #pragma mark "API"
 - (void)pluginInitialize {
     NSString* appId = [[self.commandDelegate settings] objectForKey:@"wechatappid"];
-
     if (appId && ![appId isEqualToString:self.wechatAppId]) {
         self.wechatAppId = appId;
         [WXApi registerApp: appId];
@@ -44,7 +43,7 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     NSDictionary *params = [command.arguments objectAtIndex:0];
     if (!params)
     {
-        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误1"];
         return ;
     }
 
@@ -129,39 +128,48 @@ static int const MAX_THUMBNAIL_SIZE = 320;
 {
     // check arguments
     NSDictionary *params = [command.arguments objectAtIndex:0];
+    // NSLog(@"start>>>>>>>>>",*params);
+
     if (!params)
     {
-        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误2"];
         return ;
     }
 
     // check required parameters
     NSArray *requiredParams;
-    if ([params objectForKey:@"mch_id"])
-    {
-        requiredParams = @[@"mch_id", @"prepay_id", @"timestamp", @"nonce", @"sign", @"appid"];
+    if ([params objectForKey:@"mch_id"]) {
+        // requiredParams = @[@"mch_id", @"prepay_id", @"timestamp", @"nonce", @"sign", @"appid"];
+        requiredParams = @[@"mch_id", @"prepay_id", @"timestamp", @"nonce", @"sign"];
     }
     else
     {
-        requiredParams = @[@"partnerid", @"prepayid", @"timestamp", @"noncestr", @"sign", @"appid"];
+        // requiredParams = @[@"partnerid", @"prepayid", @"timestamp", @"noncestr", @"sign", @"appid"];
+        requiredParams = @[@"partnerid", @"prepayid", @"timestamp", @"noncestr", @"sign"];
     }
+// 
 
     for (NSString *key in requiredParams)
     {
+        // NSLog(@"wwwwwwww>>>>>>>>>",key);
         if (![params objectForKey:key])
         {
-            [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+            [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误3"];
             return ;
         }
     }
 
+    // NSLog(@"end>>>>>>>>>",key);
+
+
+
     PayReq *req = [[PayReq alloc] init];
 
-    NSString *appId = [params objectForKey:requiredParams[5]];
-    if (appId && ![appId isEqualToString:self.wechatAppId]) {
-        self.wechatAppId = appId;
-        [WXApi registerApp: appId];
-    }
+    // NSString *appId = [params objectForKey:requiredParams[5]];
+    // if (appId && ![appId isEqualToString:self.wechatAppId]) {
+    //     self.wechatAppId = appId;
+    //     [WXApi registerApp: appId];
+    // }
 
     req.partnerId = [params objectForKey:requiredParams[0]];
     req.prepayId = [params objectForKey:requiredParams[1]];
@@ -208,7 +216,7 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     NSDictionary *params = [command.arguments objectAtIndex:0];
     if (!params)
     {
-        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误4"];
         return ;
     }
 
@@ -220,7 +228,7 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     {
         if (![params objectForKey:key])
         {
-            [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+            [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误5"];
             return ;
         }
     }
@@ -252,7 +260,7 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     NSString *url = [command.arguments objectAtIndex:0];
     if (!url || ![url hasPrefix:@"weixin://"])
     {
-        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误"];
+        [self failWithCallbackID:command.callbackId withMessage:@"参数格式错误6"];
         return ;
     }
 
