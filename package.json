@@ -1,9 +1,9 @@
 {
   "name": "com.matrixgz.cordova-plugin-wechat",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "A cordova plugin, a JS version of Wechat SDK",
   "cordova": {
-    "id": "cordova-plugin-wechat",
+    "id": "com.matrixgz.cordova-plugin-wechat",
     "platforms": [
       "ios",
       "android"
